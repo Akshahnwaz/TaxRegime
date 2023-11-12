@@ -1,0 +1,1066 @@
+import mysql.connector
+from tkinter import * 
+import tkinter as tk
+from tkinter import ttk
+from tkinter import messagebox
+import os
+con=mysql.connector.connect(host="localhost",user="root",password="aksha",database="TAX")
+
+
+
+def pdf1():        
+    os.startfile('D:\Regimetax\circular-5-2023.pdf')
+
+def pdf2():
+    os.startfile('D:\Regimetax\pdf.jpg')
+
+#==============DELETE WINDOW============
+def delete_details():
+    delete_window=Tk()
+    delete_window.title("TAX REGIME")
+    delete_window.geometry("1550x800+0+0")
+
+    #==============Variables============
+    userid=StringVar()
+
+    def delete_details1():
+        messagebox.showwarning("Caution","ALREADY IN DELETION PAGE",parent=delete_window)
+
+    f=Frame(delete_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+    li_label.pack(side=LEFT)
+    
+    menu_frame=Frame(delete_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    menu_frame.pack(side=LEFT,fill="y")
+    home_button=Button(menu_frame,text="Home",command=home,bg="green",font="helvetica 15 bold",fg="white",width="15",cursor="hand2")
+    home_button.pack(pady=20)
+    pass_button=Button(menu_frame,text="Password Reset",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+    pass_button.pack(pady=20)
+    update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=update_details,cursor="hand2")
+    update_button.pack(pady=20)
+    delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details1,cursor="hand2")
+    delete_button.pack(pady=20)
+    report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+    report_button.pack(pady=20)
+
+    f=Frame(delete_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Delete Form",fg="blue",font="helvetica 20 bold",bg="grey88")
+    li_label.pack()
+
+    f1= Frame(delete_window,borderwidth=8,bg="grey86",relief=SUNKEN)
+    f1.pack(pady=50)
+    uinfobox_label=Label(f1,bg="grey86",width="20")
+    uinfobox_label.place(x=40,y=80)
+    uinfobox_label.pack(padx=350,pady=100)
+
+    #===========User ID===========
+    usid_Label=Label(f1,text="User Id",bg="grey86", fg="black",font="helvetica 25 bold")
+    usid_Label.place(x=40,y=100)
+    ui=Entry(f1,font="18",bd="8",textvariable=userid,width="40")
+    ui.place(x=300,y=100) 
+
+     #CHECKING USERID EXIST OR NOT
+    def check_user(userid):
+        sql='select * from person where userid=%s'
+        c=con.cursor(buffered=True)
+        data=(userid,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+
+    #==============DELETE BUTTON FUNCTION============
+    def delete():
+        mdelete=messagebox.askyesno("Tax Regime","Do you want to delete this user",parent=delete_window)
+        if mdelete>0:
+            userid=ui.get()
+            if userid=="":
+                #==========WARNING MESSAGE FOR LEAVING ANY FIELD EMPTY==========
+                messagebox.showwarning("Caution","Password and UserId fields are required",parent=delete_window)
+                
+            elif (check_user(userid)==False):   
+                #==========WARNING MESSAGE FOR ENTERING INVALID USER ID==========           
+                messagebox.showwarning("Caution","User_Id Doesn't Exist",parent=delete_window)    
+                
+            else:
+                if mdelete>0:      
+                    data=()
+                    c=con.cursor()
+                    sql='delete from person where userid=%s'
+                    data=(userid,)
+                    c.execute(sql,data)
+                    con.commit()
+                    #==========OUTPUT MESSAGE FOR DELETING DETAILS SUCCESSFULLY==========
+                    messagebox.showinfo("Successful","DETAILS DELETED SUCCESSFULLY",parent=delete_window)
+                else:
+                    if not mdelete:
+                        return     
+            
+
+
+    
+    up=Button(f1,text="DELETE",bg="red",font="helvetica 20 bold",fg="white",width="20",command=delete,cursor="hand2")
+    up.pack(side=RIGHT)
+
+    delete_window.mainloop()
+
+#==============UPDATE WINDOW============
+def update_details():
+    Update_window=Tk()
+    Update_window.title("TAX REGIME")
+    Update_window.geometry("1550x800+0+0")
+
+    #==============Variables============
+    userid=StringVar()
+    name=StringVar()
+    level=StringVar()
+    crt=StringVar()
+    optn=StringVar()
+    pswrd=StringVar()
+    email=StringVar()
+    phnno=StringVar()
+    adrs=StringVar()
+
+    def update_details1():
+        messagebox.showwarning("Caution","ALREADY IN UPDATING DETAILS PAGE",parent=Update_window)
+        
+
+    f=Frame(Update_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+    li_label.pack(side=LEFT)
+    
+    menu_frame=Frame(Update_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    menu_frame.pack(side=LEFT,fill="y")
+    home_button=Button(menu_frame,text="Home",command=home,bg="green",font="helvetica 15 bold",fg="white",width="15",cursor="hand2")
+    home_button.pack(pady=20)
+    pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+    pass_button.pack(pady=20)
+    update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=update_details1,cursor="hand2")
+    update_button.pack(pady=20)
+    delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+    delete_button.pack(pady=20)
+    report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+    report_button.pack(pady=20)
+
+    f=Frame(Update_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Updating form",fg="blue",font="helvetica 20 bold",bg="grey88")
+    li_label.pack()
+
+    h_label=Label(Update_window,text="Please enter all the new updated details of User's",font="helvetica 18 bold")
+    h_label.pack(pady=20)
+
+    f1= Frame(Update_window,borderwidth=8,bg="grey86",relief=SUNKEN)
+    f1.pack(pady=10)
+    uinfobox_label=Label(f1,bg="grey86",width="20")
+    uinfobox_label.place(x=40,y=80)
+    uinfobox_label.pack(padx=350,pady=245)
+
+    #===========User ID===========
+    usid_Label=Label(f1,text="User Id",bg="grey86", fg="black",font="helvetica 15 bold")
+    usid_Label.place(x=40,y=20)
+    ui=Entry(f1,font="18",bd="8",textvariable=userid,width="40")
+    ui.place(x=300,y=20)
+
+    #===========NAME===========
+    name_Label=Label(f1,text="Name",bg="grey86", fg="black",font="helvetica 15 bold")
+    name_Label.place(x=40,y=70)
+    n=Entry(f1,font="18",bd=8,textvariable=name,width="40")
+    n.place(x=300,y=70)
+
+    #===========E-MAIL===========
+    eml_Label=Label(f1,text="E-Mail",bg="grey86", fg="black",font="helvetica 15 bold")
+    eml_Label.place(x=40,y=120)
+    eml=Entry(f1,font="18",bd=8,textvariable=email,width="40")
+    eml.place(x=300,y=120)
+
+    #===========PHONE NUMBER===========
+    phn_Label=Label(f1,text="Phone Number",bg="grey86", fg="black",font="helvetica 15 bold")
+    phn_Label.place(x=40,y=170)
+    phn=Entry(f1,font="18",bd=8,textvariable=phnno,width="40")
+    phn.place(x=300,y=170)
+
+    #===========DATE===========
+    date_Label=Label(f1,text="Created_on[YYYY-MM-DD]",bg="grey86", fg="black",font="helvetica 15 bold")
+    date_Label.place(x=40,y=220)
+    co=Entry(f1,font="18",bd=8,textvariable=crt,width="40")
+    co.place(x=300,y=220)
+
+    #===========LEVEL===========
+    level_label=Label(f1,text="Level",bg="grey86", fg="black",font="helvetica 15 bold")
+    level_label.place(x=40,y=270)
+    lvl=Entry(f1,font="18",bd=8,textvariable=level,width="40")
+    lvl.place(x=300,y=270)
+
+    #===========ADDRESS===========
+    address_Label=Label(f1,text="Address",bg="grey86", fg="black",font="helvetica 15 bold")
+    address_Label.place(x=40,y=320)
+    address=Entry(f1,font="18",bd=8,textvariable=adrs,width="40")
+    address.place(x=300,y=320)
+
+    #===========OPTION===========
+    optn_Label=Label(f1,text="Option",bg="grey86", fg="black",font="helvetica 15 bold")
+    optn_Label.place(x=40,y=370)
+    o=Entry(f1,font="18",bd=8,textvariable=optn,width="40")
+    o.place(x=300,y=370)
+
+    #===========PASSWORD===========
+    psd_Label=Label(f1,text="Password",bg="grey86", fg="black",font="helvetica 15 bold")
+    psd_Label.place(x=40,y=420)
+    pwd=Entry(f1,font="18",bd=8,textvariable=pswrd,width="40")
+    pwd.place(x=300,y=420)
+
+    
+
+    #CHECKING USERID EXIST OR NOT
+    def check_user(userid):
+        sql='select * from person where userid=%s'
+        c=con.cursor(buffered=True)
+        data=(userid,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+        
+    #CHECKING PASSWORD CORRECT OR NOT    
+    def check_psd(pswrd):
+        sql1='select password from person where password=%s '
+        c=con.cursor(buffered=True)
+        data=(pswrd,)
+        c.execute(sql1,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+        
+    #==============UPDATE FUNCTION============
+    def update_form():
+        userid=ui.get()
+        pswrd=pwd.get()
+        if pswrd=="" or userid=="":
+            #==========WARNING MESSAGE FOR LEAVING ANY FIELD EMPTY==========
+            messagebox.showwarning("Caution","Password and UserId fields are required",parent=Update_window)
+        elif (check_user(userid)==False):
+            #==========WARNING MESSAGE FOR ENTERING INVALID USER ID==========
+            messagebox.showwarning("Caution","User_Id Doesn't Exist",parent=Update_window)          
+        else:
+            if (check_user(userid)==True):
+                if (check_psd(pswrd)==True):         
+
+                    data=()
+                    userid=ui.get()
+                    name=n.get()
+                    level=lvl.get()
+                    crt=co.get()
+                    optn=o.get()
+                    pswrd=pwd.get()
+                    email=eml.get()
+                    phnno=phn.get()
+                    adrs=address.get()
+                    c=con.cursor()                    
+                    sql='update person set Name=%s ,EMail=%s ,Phone_Number=%s ,Created_On=%s ,Level=%s ,Address=%s ,Options=%s where userid = %s and  password= %s'
+                    data=(name,email,phnno,crt,level,adrs,optn,userid,pswrd)#creation of tuples
+                    c.execute(sql,data)
+                    con.commit()
+                    #==========OUTPUT MESSAGE FOR UPDATING DETAILS SUCCESSFULLY==========
+                    messagebox.showinfo("Successful","DETAILS UPDATED SUCCESSFULLY",parent=Update_window)
+
+                else:
+                    #==========WARNING MESSAGE FOR ENTERING WRONG PASSWORD==========
+                    messagebox.showwarning("Caution","Wrong Password!!",parent=Update_window)     
+            else:
+                #==========WARNING MESSAGE FOR ENTERING INVALID USER ID==========   
+                messagebox.showwarning("Caution","User_Id Doesn't Exist",parent=Update_window)
+
+    up=Button(f1,text="UPDATE",bg="blue",font="helvetica 20 bold",fg="white",width="20",command=update_form,cursor="hand2")
+    up.pack(side=RIGHT)
+
+
+    Update_window.mainloop()
+
+def home1():
+    messagebox.showwarning("Caution","ALREADY IN HOME PAGE",parent=LogIn_window)
+
+
+# ********************HOME WINDOW*********************
+def home():
+    LogIn_window=Tk()
+    LogIn_window.title("TAX REGIME")
+    LogIn_window.geometry("1550x800+0+0")
+
+    f=Frame(LogIn_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+    li_label.pack(side=LEFT)
+    
+    menu_frame=Frame(LogIn_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    menu_frame.pack(side=LEFT,fill="y")
+    home_button=Button(menu_frame,text="Home",command=home1,bg="green",font="helvetica 15 bold",fg="white",width="15",cursor="hand2")
+    home_button.pack(pady=20)
+    pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+    pass_button.pack(pady=20)
+    update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=update_details,cursor="hand2")
+    update_button.pack(pady=20)
+    delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+    delete_button.pack(pady=20)
+    report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+    report_button.pack(pady=20)
+    
+    f1=Frame(LogIn_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+    f1.pack(fill="x",pady=20)
+    li_label=Label(f1,text="Log In",fg="blue",font="helvetica 20 bold",bg="grey88")
+    li_label.pack()
+    h_label=Label(LogIn_window,text="Please enter your UserId and Password of RFID System",font="helvetica 15 bold")
+    h_label.pack()
+
+    f2= Frame(LogIn_window,borderwidth=8,bg="grey86",relief=SUNKEN)
+    f2.pack(pady=30)
+    uinfobox_label=Label(f2,bg="grey86",width="20")
+    uinfobox_label.place(x=40,y=80)
+    uinfobox_label.pack(padx=140,pady=170)
+    uinfo_label=Label(f2,text="User Information ",bg="grey86",fg="blue",font="helvetica 15 bold underline",width="20")
+    uinfo_label.place(x=10,y=9)
+
+    #===========User ID===========
+    ui_label=Label(f2,text="UserId",bg="grey86",font="helvetica 15 bold",width="10")
+    ui_label.place(x=10,y=60)
+    uid=Entry(f2,font="18",bd=5,width="30",bg="white")
+    uid.place(x=40,y=90)
+
+    #===========PASSWORD===========
+    pwd_label=Label(f2,text="Password",bg="grey86",font="helvetica 15 bold",width="10")
+    pwd_label.place(x=20,y=140)
+    pwd=Entry(f2,font="18",bd=5,width="30",bg="white")
+    pwd.place(x=40,y=170)
+
+    #===========BUTTON===========
+    LogIn_button=Button(f2,text="Log In",bg="green",font="helvetica 20 bold",fg="white",width="20",command=calc,cursor="hand2")
+    LogIn_button.place(x=50,y=220)
+    Fp_button=Button(f2,text="Forgot Password ?",fg="white",bg="blue",font="helvetica 15 bold",command=frgt_pswrd,cursor="hand2")
+    Fp_button.place(x=70,y=300)
+    Sup_button=Button(f2,text="Sign Up",bg="blue",fg="white",font="helvetica 15 bold",command=sign_up,cursor="hand2")
+    Sup_button.place(x=290,y=300)
+    LogIn_window.mainloop()
+
+
+# ********************REPORT WINDOW*********************
+def report():
+        report_window=Tk()
+        report_window.title("TAX REGIME")
+        report_window.geometry("1550x800+0+0")
+
+        def report1():
+            messagebox.showwarning("Caution","ALREADY IN REPORT PAGE",parent=report_window)
+
+        #=========Variables===========
+        strt_date=StringVar()
+        end_date=StringVar()
+
+        
+        
+        f=Frame(report_window,bg="blue",borderwidth=6,relief=SUNKEN)
+        f.pack(fill="x")
+        li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+        li_label.pack(side=LEFT)
+
+        menu_frame=Frame(report_window,bg="blue",borderwidth=6,relief=SUNKEN)
+        menu_frame.pack(side=LEFT,fill="y")
+        home_button=Button(menu_frame,text="Home",bg="green",command=home,font="helvetica 15 bold",fg="white",width="15",cursor="hand2")
+        home_button.pack(pady=20)
+        pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+        pass_button.pack(pady=20)
+        update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+        update_button.pack(pady=20)
+        delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+        delete_button.pack(pady=20)
+        report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report1,cursor="hand2")
+        report_button.pack(pady=20)
+        
+        f=Frame(report_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+        f.pack(fill="x")
+        li_label=Label(f,text="Report",fg="blue",font="helvetica 20 bold",bg="grey88")
+        li_label.pack()
+        
+        #=============SHOW TABLE==============           
+        conn = con.cursor()
+        conn.execute('select * from person')
+        table_frame=Frame(report_window,bg="white",borderwidth=6,relief=SUNKEN)
+        table_frame.place(x=230,y=150,width=1260,height=500)     
+        tree=ttk.Treeview(table_frame)
+        tree['show']='headings'
+        s= ttk.Style(table_frame)
+        s.configure(".", font="helvetica 10")
+            
+        tree["columns"] = ("UserId","Name","EMail","PhnNo","Created_on","Level","Address","Options")
+            
+                    #setting width of the column
+        tree.column('UserId',stretch="NO",minwidth=100,width=100,anchor=tk.CENTER)
+        tree.column('Name',stretch="NO",minwidth=300,width=300,anchor=tk.CENTER)
+        tree.column('EMail',stretch="NO",minwidth=300,width=300,anchor=tk.CENTER)
+        tree.column('PhnNo',stretch="NO",minwidth=200,width=200,anchor=tk.CENTER)
+        tree.column('Created_on',stretch="NO",minwidth=100,width=100,anchor=tk.CENTER)
+        tree.column('Level',stretch="NO",minwidth=100,width=100,anchor=tk.CENTER)
+        tree.column('Address',stretch="NO",minwidth=200,width=200,anchor=tk.CENTER)
+        tree.column('Options',stretch="NO",minwidth=100,width=100,anchor=tk.CENTER)
+
+
+
+            #setting headings of the column
+        tree.heading('UserId',text="ID",anchor=tk.CENTER)
+        tree.heading('Name',text="NAME",anchor=tk.CENTER)
+        tree.heading('EMail',text="E-MAIL",anchor=tk.CENTER)
+        tree.heading('PhnNo',text="PHONE NUMBER",anchor=tk.CENTER)
+        tree.heading('Created_on',text="CREATED ON",anchor=tk.CENTER)
+        tree.heading('Level',text="LEVEL",anchor=tk.CENTER)
+        tree.heading('Address',text="ADDRESS",anchor=tk.CENTER)
+        tree.heading('Options',text="OPTIONS",anchor=tk.CENTER)
+            
+        i=0
+        for ro in conn:
+            tree.insert('',i,text="",values=(ro[0],ro[1],ro[2],ro[3],ro[4],ro[5],ro[6],ro[7]))
+            i=i+1
+                
+                # ********************HORIZONTAL SCROLL*********************   
+        hsb= ttk.Scrollbar(table_frame,orient="horizontal")
+        hsb.configure(command=tree.xview)
+        tree.configure(xscrollcommand=hsb.set)
+        hsb.pack(fill=X,side=BOTTOM)
+            
+                    # ********************VERTICAL SCROLL********************* 
+        vsb= ttk.Scrollbar(table_frame,orient="vertical")
+        vsb.configure(command=tree.yview)
+        tree.configure(yscrollcommand=vsb.set)
+        vsb.pack(fill=Y,side=RIGHT)        
+            
+        tree.pack(fill=BOTH,expand=1)
+
+        '''def search():
+            d=()
+            c=con.cursor()
+            sql='select * from person where Created_On >=%s and Created_On<=%s'
+            d=(esd.get(),eed.get(),)
+            c.execute(sql,d)
+            rows=c.fetchall()
+            if len(rows)!=0:
+                tree.delete(*tree.get_children())
+                for i in rows:
+                    tree.insert("",END,values=i)
+                c.commit()'''
+
+
+
+        
+        report_window.mainloop()
+
+
+
+ 
+
+# ********************REGISTRATION WINDOW*********************
+def sign_up():
+    registration_window=Tk()
+    registration_window.title("TAX REGIME")
+    registration_window.geometry("1550x800+0+0")
+
+    userid=StringVar()
+    name=StringVar()
+    level=StringVar()
+    crt=StringVar()
+    optn=StringVar()
+    pswrd=StringVar()
+    email=StringVar()
+    phnno=StringVar()
+    adrs=StringVar()
+    
+
+    f=Frame(registration_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+    li_label.pack(side=LEFT)
+
+    menu_frame=Frame(registration_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    menu_frame.pack(side=LEFT,fill="y")
+    home_button=Button(menu_frame,text="Home",bg="green",font="helvetica 15 bold",fg="white",width="15",command=home,cursor="hand2")
+    home_button.pack(pady=20)
+    pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+    pass_button.pack(pady=20)
+    update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=update_details,cursor="hand2")
+    update_button.pack(pady=20)
+    delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+    delete_button.pack(pady=20)
+    report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+    report_button.pack(pady=20)
+    
+    f=Frame(registration_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Registration Form",fg="blue",font="helvetica 20 bold",bg="grey88")
+    li_label.pack()
+
+    f1= Frame(registration_window,borderwidth=8,bg="grey86",relief=SUNKEN)
+    f1.pack(pady=50)
+    uinfobox_label=Label(f1,bg="grey86",width="20")
+    uinfobox_label.place(x=40,y=80)
+    uinfobox_label.pack(padx=350,pady=245)
+
+    #===========User ID===========
+    usid_Label=Label(f1,text="User Id",bg="grey86", fg="black",font="helvetica 15 bold")
+    usid_Label.place(x=40,y=20)
+    ui=Entry(f1,font="18",bd="8",textvariable=userid,width="40")
+    ui.place(x=300,y=20)
+
+    #===========NAME===========
+    name_Label=Label(f1,text="Name",bg="grey86", fg="black",font="helvetica 15 bold")
+    name_Label.place(x=40,y=70)
+    n=Entry(f1,font="18",bd=8,textvariable=name,width="40")
+    n.place(x=300,y=70)
+
+    #===========E-MAIL===========
+    eml_Label=Label(f1,text="E-Mail",bg="grey86", fg="black",font="helvetica 15 bold")
+    eml_Label.place(x=40,y=120)
+    eml=Entry(f1,font="18",bd=8,textvariable=email,width="40")
+    eml.place(x=300,y=120)
+
+    #===========PHONE NUMBER===========
+    phn_Label=Label(f1,text="Phone Number",bg="grey86", fg="black",font="helvetica 15 bold")
+    phn_Label.place(x=40,y=170)
+    phn=Entry(f1,font="18",bd=8,textvariable=phnno,width="40")
+    phn.place(x=300,y=170)
+
+    #===========DATE===========
+    date_Label=Label(f1,text="Created_on[YYYY-MM-DD]",bg="grey86", fg="black",font="helvetica 15 bold")
+    date_Label.place(x=40,y=220)
+    co=Entry(f1,font="18",bd=8,textvariable=crt,width="40")
+    co.place(x=300,y=220)
+
+    #===========LEVEL===========
+    level_label=Label(f1,text="Level",bg="grey86", fg="black",font="helvetica 15 bold")
+    level_label.place(x=40,y=270)
+    lvl=Entry(f1,font="18",bd=8,textvariable=level,width="40")
+    lvl.place(x=300,y=270)
+
+    #===========ADDRESS===========
+    address_Label=Label(f1,text="Address",bg="grey86", fg="black",font="helvetica 15 bold")
+    address_Label.place(x=40,y=320)
+    address=Entry(f1,font="18",bd=8,textvariable=adrs,width="40")
+    address.place(x=300,y=320)
+
+    #===========OPTION===========
+    optn_Label=Label(f1,text="Option",bg="grey86", fg="black",font="helvetica 15 bold")
+    optn_Label.place(x=40,y=370)
+    o=Entry(f1,font="18",bd=8,textvariable=optn,width="40")
+    o.place(x=300,y=370)
+
+    #===========PASSWORD===========
+    psd_Label=Label(f1,text="Password",bg="grey86", fg="black",font="helvetica 15 bold")
+    psd_Label.place(x=40,y=420)
+    pwd=Entry(f1,font="18",bd=8,textvariable=pswrd,width="40")
+    pwd.place(x=300,y=420)
+
+    #CHECKING USERID EXIST OR NOT
+    def check_user(userid):
+        sql='select * from person where userid=%s'
+        c=con.cursor(buffered=True)
+        data=(userid,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+        
+
+    
+        
+    
+    #ADDING NEW USER
+    def add_user():
+        userid=ui.get()
+        if ui.get()=="" or n.get()=="" or lvl.get()=="" or co.get()=="" or o.get()=="" or pwd.get()=="" or eml.get()=="" or phn.get()=="" or address.get()=="":
+            #==========WARNING MESSAGE FOR LEAVING ANY FIELD EMPTY==========
+            messagebox.showwarning("Caution","All fields are required",parent=registration_window)
+        
+        else:
+            if (check_user(userid)==True):
+                messagebox.showwarning("Caution","User_Id Already Exist",parent=registration_window)
+            else:
+                try:
+                    data=()
+                    userid=ui.get()
+                    name=n.get()
+                    level=lvl.get()
+                    crt=co.get()
+                    optn=o.get()
+                    pswrd=pwd.get()
+                    email=eml.get()
+                    phnno=phn.get()
+                    adrs=address.get()
+                    data=(userid,name,email,phnno,crt,level,adrs,optn,pswrd)#creation of tuples
+                    sql='insert into person values(%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+                    c=con.cursor()
+                    val=data
+                    c.execute(sql,val)
+                    con.commit()
+                    #==========OUTPUT MESSAGE FOR ADDING DETAILS SUCCESSFULLY==========
+                    messagebox.showinfo("Successful","Registered Successfully",parent=registration_window)
+
+                except Exception as es:
+                    #==========WARNING MESSAGE FOR ENTERING ANY FIELD's DATA WRONG==========
+                    messagebox.showwarning("Warning",f"Something went wrong:{str(es)}",parent=registration_window)
+
+    
+    #===========BUTTON===========
+    rb=Button(f1,text="REGISTER",bg="green",font="helvetica 20 bold",fg="white",width="10",command=add_user,height="1",cursor="hand2")
+    rb.pack(side=RIGHT)  
+
+    registration_window.mainloop()
+
+
+#***********************FORGET PASSWORD WINDOW****************************
+def frgt_pswrd():
+    userid=StringVar()
+    np=StringVar()
+    pswrd=StringVar()
+ 
+    #CHECKING USERID EXIST OR NOT
+    def check_user(userid):
+        sql='select * from person where userid=%s'
+        c=con.cursor(buffered=True)
+        data=(userid,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1:
+            return True
+        else:
+            return False
+        
+    #CHECKING PASSWORD CORRECT OR NOT
+    def check_psd(pswrd):
+        sql1='select password from person where password=%s '
+        c=con.cursor(buffered=True)
+        data=(pswrd,)
+        c.execute(sql1,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+        
+    #=============UPDATING PASSWORD FUNCTION=============
+    def update():
+        userid=ui.get()
+        pswrd=opwd.get()
+        if pswrd=="" or userid=="" or pwd.get()=="":
+            #==========WARNING MESSAGE FOR LEAVING ANY FIELD EMPTY==========
+            messagebox.showwarning("Caution","All fields are required",parent=frgt_pswrd_window)
+              
+        else:
+            if (check_user(userid)==True):
+                if (check_psd(pswrd)==True): 
+                    np=pwd.get()
+                    c=con.cursor()
+                    sql='update person set password= %s where userid = %s and password=%s'
+                    d=(np,userid,pswrd)
+                    c.execute(sql,d)
+                    con.commit()
+                    #==========OUTPUT MESSAGE FOR UPDATING PASSWORD SUCCESSFULLY==========
+                    messagebox.showinfo("Successful","PASSWORD UPDATED SUCCESSFULLY",parent=frgt_pswrd_window)
+                else:
+                    messagebox.showwarning("Caution","Wrong Old Password!!",parent=frgt_pswrd_window)     
+            else:
+                #==========WARNING MESSAGE FOR ENTERING INVALID USER ID==========   
+                messagebox.showwarning("Caution","User_Id Doesn't Exist",parent=frgt_pswrd_window)
+            
+            
+    frgt_pswrd_window=Tk()
+    frgt_pswrd_window.title("Tax Regime")
+    frgt_pswrd_window.geometry("1550x800+0+0")
+
+    f=Frame(frgt_pswrd_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+    li_label.pack(side=LEFT)
+
+    menu_frame=Frame(frgt_pswrd_window,bg="blue",borderwidth=6,relief=SUNKEN)
+    menu_frame.pack(side=LEFT,fill="y")
+    home_button=Button(menu_frame,text="Home",bg="green",font="helvetica 15 bold",command=home,fg="white",width="15",cursor="hand2")
+    home_button.pack(pady=20)
+    pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+    pass_button.pack(pady=20)
+    update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=update_details,cursor="hand2")
+    update_button.pack(pady=20)
+    delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+    delete_button.pack(pady=20)
+    report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+    report_button.pack(pady=20)
+
+    f=Frame(frgt_pswrd_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+    f.pack(fill="x")
+    li_label=Label(f,text="PASSWORD UPDATING",fg="blue",font="helvetica 20 bold",bg="grey88")
+    li_label.pack()
+
+
+    f1= Frame(frgt_pswrd_window,borderwidth=8,bg="grey86",relief=SUNKEN)
+    f1.pack(pady=50)
+    uinfobox_label=Label(f1,bg="grey86",width="20")
+    uinfobox_label.place(x=60,y=130)
+    uinfobox_label.pack(padx=290,pady=150)
+
+    #===========USER ID===========
+    usid_Label=Label(f1,text="User Id",font="helvetica 15 bold",bg="grey86",fg="black")
+    usid_Label.place(x=40,y=40)
+    ui=Entry(f1,font="18",bd=7,textvariable=userid,width="25")
+    ui.place(x=300,y=40)
+
+    #===========OLD PASSWORD===========
+    opsd_Label=Label(f1,text="Enter old Password",font="helvetica 15 bold",bg="grey86",fg="black")
+    opsd_Label.place(x=40,y=130)
+    opwd=Entry(f1,font="18",bd=7,textvariable=pswrd,width="25")
+    opwd.place(x=300,y=130)
+
+    #===========NEW PASSWORD===========
+    psd_Label=Label(f1,text="Enter new Password",font="helvetica 15 bold",bg="grey86",fg="black")
+    psd_Label.place(x=40,y=220)
+    pwd=Entry(f1,font="18",bd=7,textvariable=np,width="25")
+    pwd.place(x=300,y=220)
+    
+    #===========BUTTON===========
+    up=Button(f1,text="UPDATE",bg="blue",font="helvetica 20 bold",fg="white",width="20",command=update,cursor="hand2")
+    up.pack(side=RIGHT)
+
+    frgt_pswrd_window.mainloop()
+
+
+    
+# ***********************CALCULATION WINDOW************************
+def calc():
+    userid=StringVar()
+    pswrd=StringVar()
+    ck=IntVar()
+    ck1=IntVar()
+    ck.set(1)
+    ck1.set(1)
+
+    #====================================CALCULATOR====================================    
+    def calculator():
+        def click(event):
+            global ival
+            text=event.widget.cget("text")
+            if text =="=":
+                if ival.get()=="":
+                    #==========WARNING MESSAGE FOR LEAVING ANY FIELD EMPTY==========
+                    messagebox.showwarning("Caution","Field cannot be empty")
+                else:
+                    if ival.get().isdigit():
+                        value=int(ival.get())
+                    else:
+                        value=eval(input_box.get())
+                        
+                    ival.set(value)
+                    input_box.update()               
+            elif text=="AC":
+                ival.set("")
+                input_box.update()      
+                
+            else:
+                ival.set(ival.get() + text)
+                input_box.update()    
+
+        calculator_window=Tk()
+        calculator_window.title("calculator")
+        calculator_window.minsize(width=550, height=535)
+        calculator_window.maxsize(width=550, height=535)
+        
+        ival=StringVar()
+        ival.set("")          
+        
+        input_box = Entry(calculator_window, textvariable=ival,bg="beige", bd=8, font="helvetica 40 bold", borderwidth=10)
+        input_box.pack(fill=X, ipadx=5, pady=10, padx=8)  
+        
+        f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+        b=Button(f,bg="tomato", fg="white",font="helvetica 18 bold", text="AC", padx=7, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=22,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="00", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=26.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="%", padx=8, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=29,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="indianred", fg="white",font="helvetica 8 bold", text="/", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28,pady=5)
+        b.bind("<Button-1>", click)
+        f.pack()          
+        
+        f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="7", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)   
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="8", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="9", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="*", padx=11, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        f.pack()   
+        
+        f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="4", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="5", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)  
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="6", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)   
+        b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="-", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)  
+        f.pack()
+    
+        f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="1", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="2", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="3", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="+", padx=12, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        f.pack()
+        
+        f=Frame(calculator_window,bg="beige",borderwidth=6,relief=SUNKEN)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text="0", padx=13, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<Button-1>", click)
+        b=Button(f,bg="white", fg="blue",font="helvetica 18 bold", text=".", padx=13, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28.5,pady=5)
+        b.bind("<ButtonRelease-1>", click)
+        b=Button(f,bg="indianred", fg="white",font="helvetica 18 bold", text="=", padx=70, pady=5,cursor="hand2")
+        b.pack(side=LEFT,padx=28,pady=5)
+        b.bind("<Button-1>", click)
+        f.pack()
+        
+        calculator_window.mainloop()
+  
+
+    #===============CHECKING USERID EXIST OR NOT===============
+    def check_user(userid):
+        sql='select * from person where userid=%s'
+        c=con.cursor(buffered=True)
+        data=(userid,)
+        c.execute(sql,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+    
+    #===============CHECKING PASSWORD CORRECT OR NOT===============
+    def check_psd(pswrd):
+        sql1='select password from person where password=%s '
+        c=con.cursor(buffered=True)
+        data=(pswrd,)
+        c.execute(sql1,data)
+        r=c.rowcount
+        if r==1 :
+            return True
+        else:
+            return False
+        
+    #===============CHECK BUTTON VALUE===============
+    def getvals():
+        if (ck.get()==1):
+            submit_button['state']=DISABLED
+            if (ck1.get()==2):
+                submit_button['state']=NORMAL
+            else:
+                submit_button['state']=DISABLED
+
+        elif (ck.get()==0) and (ck1.get()==0):
+            submit_button['state']=DISABLED
+        else :
+            submit_button['state']=DISABLED
+
+    
+    
+    
+    pswrd=pwd.get()
+    userid=uid.get()
+    if pwd.get()=="" or uid.get()=="":
+        #==========WARNING MESSAGE FOR LEAVING ANY FIELD EMPTY==========
+        messagebox.showwarning("Caution","All fields are required",parent=LogIn_window)
+    else:
+        if (check_user(userid)==True):
+            if (check_psd(pswrd)==True):
+                calc_window=Tk()
+                calc_window.title("TAX REGIME")
+                calc_window.geometry("1550x800+0+0")
+                
+                f=Frame(calc_window,bg="blue",borderwidth=6,relief=SUNKEN)
+                f.pack(fill="x")
+                li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+                li_label.pack(side=LEFT)
+                
+                menu_frame=Frame(calc_window,bg="blue",borderwidth=6,relief=SUNKEN)
+                menu_frame.pack(side=LEFT,fill="y")
+                home_button=Button(menu_frame,text="Home",bg="green",font="helvetica 15 bold",fg="white",width="15",command=home,cursor="hand2")
+                home_button.pack(pady=20)
+                pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+                pass_button.pack(pady=20)
+                update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+                update_button.pack(pady=20)
+                delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+                delete_button.pack(pady=20)
+                report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+                report_button.pack(pady=20)
+                
+                f1=Frame(calc_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+                f1.pack(fill="x")
+                li_label=Label(f1,text="Tax Regime Switch option facility\n from default(New Tax Regime) to  Old Tax Regime for Financial Year 2023-2024",fg="blue",font="helvetica 20 bold",bg="grey88")
+                li_label.pack()
+                
+                f2= Frame(calc_window,borderwidth=8,bg="grey82",relief=SUNKEN)
+                f2.pack(pady=10)
+                uinfobox_label=Label(f2,bg="grey82",width="50")
+                uinfobox_label.place(x=40,y=80)
+                uinfobox_label.pack(padx=450,pady=270)
+
+                head_label=Label(f2,text="Record Details",font="helvetica 20 bold underline",fg="purple",bg="grey82")
+                head_label.place(x=30,y=10)
+
+                #===============USER ID===============
+                user_label=Label(f2,text="UserId",bg="grey82",font="helvetica 15 bold")
+                user_label.place(x=40,y=60)
+                ui=Entry(f2,font="18",bd=5, width=50)
+                ui.place(x=120,y=60)
+
+                #===============NAME===============
+                n_label=Label(f2,text="Name",bg="grey82",font="helvetica 15 bold")
+                n_label.place(x=40,y=100)
+                n=Entry(f2,font="18",bd=5, width=50)
+                n.place(x=120,y=100)
+
+                #===============LEVEL===============
+                lvl_label=Label(f2,text="Level",bg="grey82",font="helvetica 15 bold")
+                lvl_label.place(x=40,y=140)
+                ll=Entry(f2,font="18",bd=5, width=50)
+                ll.place(x=120,y=140) 
+
+               #==========DOCUMENT FRAME==========
+                f= Frame(f2,borderwidth=8,bg="white",relief=SUNKEN)
+                f.place(x=30,y=200)
+                docbox_label=Label(f,bg="white",width="20")
+                docbox_label.place(x=40,y=20)
+                docbox_label.pack(padx=500,pady=60) 
+                doc_label=Label(f,text="Documents : ",font="helvetica 20 bold",bg="grey95",fg="grey24")
+                doc_label.place(x=50,y=10)  
+                cc_button=Button(f,text="CBDT clarification for TDS - 115BAC ",bg="blue",font="helvetica 12 bold",fg="white",width="30",command=pdf1,cursor="hand2")
+                cc_button.place(x=100,y=100)
+                no_button=Button(f,text="New Tax Slab Vs Old Tax Slab Options ",bg="blue",font="helvetica 12 bold",fg="white",width="35", command=pdf2,cursor="hand2")
+                no_button.place(x=430,y=100)
+                tc_button=Button(f,text="Tax Calculator ",bg="blue",font="helvetica 12 bold",fg="white",width="20",command=calculator,cursor="hand2")
+                tc_button.place(x=810,y=100)
+
+                sh_label=Label(f2,text="You are currently under Income Tax default Option-I (New Tax Regime).",font="helvetica 15 bold",fg="black",bg="grey82")
+                sh_label.place(x=40,y=380)
+                optnh_label=Label(f2,text="Do you want to switch from Option-I (New Tax Regime) to Option -II (Old Tax Regime)?",font="helvetica 15",fg="black",bg="grey82")
+                optnh_label.place(x=40,y=430)
+
+                #==========COMBO BUTTON==========
+                combo_optn=ttk.Combobox(f2,font="helvetica 12 bold",width=5,state="readonly")
+                combo_optn["value"]=("YES","NO")
+                combo_optn.current(0)
+                combo_optn.place(x=920,y=430)
+                
+                #==========CHECK BUTTON==========
+                cb=Checkbutton(f2,text="I have read the enclosed documents attached carefully before exercising the switching optn.",onvalue=1, offvalue=0, font=200,fg="black",bg="grey82",variable=ck,command=getvals,cursor="hand2")
+                cb.place(x=40,y=480)
+                cb1=Checkbutton(f2,text="I can switch only once in a Financial Year",font=200,onvalue=2, offvalue=0,fg="black",bg="grey82",variable=ck1,command=getvals,cursor="hand2")
+                cb1.place(x=40,y=510)
+                submit_button=Button(calc_window,text="Submit",bg="blue", state= DISABLED,font=40,fg="white",width="30",cursor="hand2")
+                submit_button.place(x=550,y=740)          
+                
+                calc_window.mainloop()
+                
+            else:
+                #==========WARNING MESSAGE FOR ENTERING WRONG PASSWORD==========
+                messagebox.showwarning("Caution","Wrong Password!!",parent=LogIn_window)       
+        else:
+            #==========WARNING MESSAGE FOR ENTERING INVALID USER ID==========   
+            messagebox.showwarning("Caution","User_Id Doesn't Exist",parent=LogIn_window)
+
+
+#*******************************LOGIN WINDOW*************************
+LogIn_window=Tk()
+LogIn_window.title("TAX REGIME")
+LogIn_window.geometry("1550x800+0+0")
+
+f=Frame(LogIn_window,bg="blue",borderwidth=6,relief=SUNKEN)
+f.pack(fill="x")
+li_label=Label(f,text="Tax Regime",fg="white",font="helvetica 20 bold",bg="blue",pady=10)
+li_label.pack(side=LEFT)
+
+menu_frame=Frame(LogIn_window,bg="blue",borderwidth=6,relief=SUNKEN)
+menu_frame.pack(side=LEFT,fill="y")
+home_button=Button(menu_frame,text="Home",bg="green",font="helvetica 15 bold",fg="white",width="15",command=home1,cursor="hand2")
+home_button.pack(pady=20)
+pass_button=Button(menu_frame,text="Change Password",bg="green",font="helvetica 15 bold",fg="white",width="15",command=frgt_pswrd,cursor="hand2")
+pass_button.pack(pady=20)
+update_button=Button(menu_frame,text="Updating Details",bg="green",font="helvetica 15 bold",fg="white",width="15",command=update_details,cursor="hand2")
+update_button.pack(pady=20)
+delete_button=Button(menu_frame,text="Deleting User",bg="green",font="helvetica 15 bold",fg="white",width="15",command=delete_details,cursor="hand2")
+delete_button.pack(pady=20)
+report_button=Button(menu_frame,text="Report",bg="green",font="helvetica 15 bold",fg="white",width="15",command=report,cursor="hand2")
+report_button.pack(pady=20)
+
+
+f1=Frame(LogIn_window,bg="grey88",borderwidth=6,relief=SUNKEN)
+f1.pack(fill="x",pady=20)
+li_label=Label(f1,text="Log In",fg="blue",font="helvetica 20 bold",bg="grey88",pady=5)
+li_label.pack()
+h_label=Label(LogIn_window,text="Please enter your UserId and Password of RFID System",font="helvetica 15 bold")
+h_label.pack()
+
+f2= Frame(LogIn_window,borderwidth=8,bg="grey86",relief=SUNKEN)
+f2.pack(pady=30)
+uinfobox_label=Label(f2,bg="grey86",width="20")
+uinfobox_label.place(x=40,y=80)
+uinfobox_label.pack(padx=140,pady=170)
+uinfo_label=Label(f2,text="User Information ",bg="grey86",fg="blue",font="helvetica 15 bold underline",width="20")
+uinfo_label.place(x=10,y=9)
+
+#==========USER ID==========
+ui_label=Label(f2,text="UserId",bg="grey86",font="helvetica 15 bold",width="10")
+ui_label.place(x=10,y=60)
+uid=Entry(f2,font="18",bd=5,width="30",bg="white")
+uid.place(x=40,y=90)
+
+#==========PASSWORD==========
+pwd_label=Label(f2,text="Password",bg="grey86",font="helvetica 15 bold",width="10")
+pwd_label.place(x=20,y=140)
+pwd=Entry(f2,font="18",bd=5,width="30",bg="white")
+pwd.place(x=40,y=170)
+
+#==========BUTTON==========
+LogIn_button=Button(f2,text="Log In",bg="green",font="helvetica 20 bold",fg="white",width="20",command=calc,cursor="hand2")
+LogIn_button.place(x=50,y=220)
+Fp_button=Button(f2,text="Forgot Password ?",fg="white",bg="blue",font="helvetica 15 bold",command=frgt_pswrd,cursor="hand2")
+Fp_button.place(x=70,y=300)
+Sup_button=Button(f2,text="Sign Up",bg="blue",fg="white",font="helvetica 15 bold",command=sign_up,cursor="hand2")
+Sup_button.place(x=290,y=300)
+LogIn_window.mainloop()
